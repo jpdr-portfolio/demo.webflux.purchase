@@ -15,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -51,7 +50,7 @@ class AppControllerTest {
     String expectedBody = objectMapper.writeValueAsString(expectedPurchases);
     
     when(appService.findPurchases(isNull()))
-      .thenReturn(Flux.fromIterable(expectedPurchases));
+      .thenReturn(Mono.just(expectedPurchases));
     
     FluxExchangeResult<String> exchangeResult = this.webTestClient.get()
       .uri("/purchases")
@@ -78,7 +77,7 @@ class AppControllerTest {
     String expectedBody = objectMapper.writeValueAsString(expectedPurchases);
     
     when(appService.findPurchases(anyInt()))
-      .thenReturn(Flux.fromIterable(expectedPurchases));
+      .thenReturn(Mono.just(expectedPurchases));
     
     FluxExchangeResult<String> exchangeResult = this.webTestClient.get()
       .uri("/purchases" + "?userId=" + 1)

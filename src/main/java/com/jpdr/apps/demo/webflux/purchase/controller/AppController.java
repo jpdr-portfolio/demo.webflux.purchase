@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -23,23 +24,30 @@ public class AppController {
   private final AppService appService;
   
   @GetMapping("/purchases")
-  public ResponseEntity<Flux<PurchaseDto>> findPurchases(@RequestParam(name = "userId", required = false) Integer userId ){
-    return new ResponseEntity<>(appService.findPurchases(userId), HttpStatus.OK);
+  public Mono<ResponseEntity<List<PurchaseDto>>> findPurchases(
+    @RequestParam(name = "userId", required = false) Integer userId ){
+    return this.appService.findPurchases(userId)
+      .map(purchase -> new ResponseEntity<>(purchase, HttpStatus.OK));
   }
   
   @PostMapping("/purchases")
-  public ResponseEntity<Mono<PurchaseDto>> createPurchase(@RequestBody PurchaseDto purchaseDto){
-    return new ResponseEntity<>(appService.createPurchase(purchaseDto), HttpStatus.CREATED);
+  public Mono<ResponseEntity<PurchaseDto>> createPurchase(@RequestBody PurchaseDto purchaseDto){
+    return this.appService.createPurchase(purchaseDto)
+      .map(purchase -> new ResponseEntity<>(purchase, HttpStatus.CREATED));
   }
   
   @GetMapping("/purchases/{purchaseId}")
-  public ResponseEntity<Mono<PurchaseDto>> findPurchaseById(@PathVariable(name = "purchaseId") Integer purchaseId ){
-    return new ResponseEntity<>(appService.findPurchaseById(purchaseId), HttpStatus.OK);
+  public Mono<ResponseEntity<PurchaseDto>> findPurchaseById(
+    @PathVariable(name = "purchaseId") Integer purchaseId ){
+    return this.appService.findPurchaseById(purchaseId)
+      .map(purchase -> new ResponseEntity<>(purchase, HttpStatus.OK));
   }
   
   @PostMapping("/purchases/{purchaseId}/cancel")
-  public ResponseEntity<Mono<PurchaseDto>> cancelPurchase(@PathVariable(name = "purchaseId") Integer purchaseId){
-    return new ResponseEntity<>(appService.cancelPurchaseById(purchaseId), HttpStatus.OK);
+  public Mono<ResponseEntity<PurchaseDto>> cancelPurchase(
+    @PathVariable(name = "purchaseId") Integer purchaseId){
+    return this.appService.cancelPurchaseById(purchaseId)
+      .map(purchase -> new ResponseEntity<>(purchase, HttpStatus.OK));
   }
   
 }

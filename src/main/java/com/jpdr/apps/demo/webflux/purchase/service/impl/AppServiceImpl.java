@@ -25,12 +25,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple5;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -47,9 +47,9 @@ public class AppServiceImpl implements AppService {
   private final StockRepository stockRepository;
   
   @Override
-  public Flux<PurchaseDto> findPurchases(Integer userId) {
+  public Mono<List<PurchaseDto>> findPurchases(Integer userId) {
     return Mono.just(Optional.ofNullable(userId))
-      .flatMapMany(optional -> {
+      .flatMap(optional -> {
           if (optional.isPresent()) {
             return findPurchasesByUserId(optional.get());
           }
@@ -59,22 +59,24 @@ public class AppServiceImpl implements AppService {
   }
   
   @Override
-  public Flux<PurchaseDto> findAllPurchases() {
+  public Mono<List<PurchaseDto>> findAllPurchases() {
     log.debug("findAllPurchases");
     return this.purchaseRepository.findAll()
       .map(PurchaseMapper.INSTANCE::entityToDto)
-      .doOnNext(purchase -> log.debug(purchase.toString()));
+      .doOnNext(purchase -> log.debug(purchase.toString()))
+      .collectList();
   }
   
   
   @Override
-  public Flux<PurchaseDto> findPurchasesByUserId(Integer userId) {
+  public Mono<List<PurchaseDto>> findPurchasesByUserId(Integer userId) {
     log.debug("findPurchasesByUserId");
     return this.userRepository.getById(userId)
       .map(UserDto::getId)
       .flatMapMany(this.purchaseRepository::findAllByUserId)
       .map(PurchaseMapper.INSTANCE::entityToDto)
-      .doOnNext(purchase -> log.debug(purchase.toString()));
+      .doOnNext(purchase -> log.debug(purchase.toString()))
+      .collectList();
   }
   
   @Override

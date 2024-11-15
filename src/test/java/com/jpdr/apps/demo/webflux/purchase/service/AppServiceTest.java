@@ -86,12 +86,11 @@ class AppServiceTest {
       .thenReturn(Flux.fromIterable(expectedPurchases));
     
     StepVerifier.create(appService.findPurchases(null))
-      .assertNext(receivedPurchase -> assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),
-        receivedPurchase))
-      .assertNext(receivedPurchase -> assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),
-      receivedPurchase))
-      .assertNext(receivedPurchase -> assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),
-      receivedPurchase))
+      .assertNext(receivedPurchases -> {
+        for (PurchaseDto receivedPurchase : receivedPurchases)
+        assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),
+          receivedPurchase);
+      })
       .expectComplete()
       .verify();
     
@@ -113,12 +112,11 @@ class AppServiceTest {
       .thenReturn(Flux.fromIterable(expectedPurchases));
     
     StepVerifier.create(appService.findPurchases(1))
-      .assertNext(receivedPurchase -> assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),
-        receivedPurchase))
-      .assertNext(receivedPurchase -> assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),
-        receivedPurchase))
-      .assertNext(receivedPurchase -> assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),
-        receivedPurchase))
+      .assertNext(receivedPurchases -> {
+        for (PurchaseDto receivedPurchase : receivedPurchases)
+          assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),
+            receivedPurchase);
+      })
       .expectComplete()
       .verify();
   }
