@@ -7,6 +7,7 @@ import com.jpdr.apps.demo.webflux.purchase.service.dto.stock.StockDto;
 import com.jpdr.apps.demo.webflux.purchase.service.dto.stock.StockTransactionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -26,6 +27,7 @@ public class StockRepositoryImpl implements StockRepository {
   }
   
   @Override
+  @Cacheable(key = "#productId", value = "stock", sync = true)
   public Mono<StockDto> getById (Integer productId) {
     return this.webClient.get()
       .uri("/stock/{productId}", productId)

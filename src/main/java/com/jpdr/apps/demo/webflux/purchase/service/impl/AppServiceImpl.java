@@ -23,6 +23,7 @@ import com.jpdr.apps.demo.webflux.purchase.service.mapper.PurchaseMapper;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -80,6 +81,7 @@ public class AppServiceImpl implements AppService {
   }
   
   @Override
+  @Cacheable(key = "#purchaseId", value = "purchases", sync = true)
   public Mono<PurchaseDto> findPurchaseById(Integer purchaseId) {
     log.debug("findPurchaseById");
     return this.purchaseRepository.findById(purchaseId)

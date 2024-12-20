@@ -12,13 +12,38 @@ spring:
     url: r2dbc:h2:mem:///purchase;
     username: sa
     password:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 1234
+      connect-timeout: 2000
+  cache:
+    type: REDIS
+    cache-names:
+      - accounts
+      - users
+      - retailers
+      - products
+      - stock
+      - purchases
 logging:
   level:
     com.jpdr.apps.demo.webflux: DEBUG
 app:
+  pod-name: "demo.webflux.purchase-0"
   base-url:
     user: "http://localhost:8081"
     account: "http://localhost:8082"
     retailer: "http://localhost:8083"
     product: "http://localhost:8084"
     stock: "http://localhost:8085"
+  event-logger:
+    kafka:
+      topic: "topic"
+      boostrap-server: "http://localhost:9092"
+      compression-type: "none"
+      delivery-timeout-ms: 10000
+      request-timeout-ms: 10000
+      add-type-info-headers: false
+      retries: 10

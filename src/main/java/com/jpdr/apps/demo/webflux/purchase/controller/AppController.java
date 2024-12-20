@@ -1,5 +1,6 @@
 package com.jpdr.apps.demo.webflux.purchase.controller;
 
+import com.jpdr.apps.demo.webflux.eventlogger.component.EventLogger;
 import com.jpdr.apps.demo.webflux.purchase.service.AppService;
 import com.jpdr.apps.demo.webflux.purchase.service.dto.purchase.PurchaseDto;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +23,20 @@ import java.util.List;
 public class AppController {
   
   private final AppService appService;
+  private final EventLogger eventLogger;
   
   @GetMapping("/purchases")
   public Mono<ResponseEntity<List<PurchaseDto>>> findPurchases(
     @RequestParam(name = "userId", required = false) Integer userId ){
     return this.appService.findPurchases(userId)
-      .map(purchase -> new ResponseEntity<>(purchase, HttpStatus.OK));
+      .doOnNext(purchases -> this.eventLogger.logEvent("findPurchases", purchases))
+      .map(purchases -> new ResponseEntity<>(purchases, HttpStatus.OK));
   }
   
   @PostMapping("/purchases")
   public Mono<ResponseEntity<PurchaseDto>> createPurchase(@RequestBody PurchaseDto purchaseDto){
     return this.appService.createPurchase(purchaseDto)
+      .doOnNext(purchase -> this.eventLogger.logEvent("createPurchase", purchase))
       .map(purchase -> new ResponseEntity<>(purchase, HttpStatus.CREATED));
   }
   
@@ -40,6 +44,7 @@ public class AppController {
   public Mono<ResponseEntity<PurchaseDto>> findPurchaseById(
     @PathVariable(name = "purchaseId") Integer purchaseId ){
     return this.appService.findPurchaseById(purchaseId)
+      .doOnNext(purchase -> this.eventLogger.logEvent("findPurchaseById", purchase))
       .map(purchase -> new ResponseEntity<>(purchase, HttpStatus.OK));
   }
   
@@ -47,6 +52,7 @@ public class AppController {
   public Mono<ResponseEntity<PurchaseDto>> cancelPurchase(
     @PathVariable(name = "purchaseId") Integer purchaseId){
     return this.appService.cancelPurchaseById(purchaseId)
+      .doOnNext(purchase -> this.eventLogger.logEvent("cancelPurchaseById", purchase))
       .map(purchase -> new ResponseEntity<>(purchase, HttpStatus.OK));
   }
   
