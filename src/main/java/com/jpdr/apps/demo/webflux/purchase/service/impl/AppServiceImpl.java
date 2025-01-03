@@ -1,5 +1,6 @@
 package com.jpdr.apps.demo.webflux.purchase.service.impl;
 
+import com.jpdr.apps.demo.webflux.commons.caching.CacheHelper;
 import com.jpdr.apps.demo.webflux.purchase.exception.account.InsufficientFundsException;
 import com.jpdr.apps.demo.webflux.purchase.exception.stock.InsufficientQuantityException;
 import com.jpdr.apps.demo.webflux.purchase.model.Purchase;
@@ -23,6 +24,7 @@ import com.jpdr.apps.demo.webflux.purchase.service.mapper.PurchaseMapper;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +48,7 @@ public class AppServiceImpl implements AppService {
   private final ProductRepository productRepository;
   private final AccountRepository accountRepository;
   private final StockRepository stockRepository;
+  private final CacheHelper cacheHelper;
   
   @Override
   public Mono<List<PurchaseDto>> findPurchases(Integer userId) {
@@ -113,10 +116,13 @@ public class AppServiceImpl implements AppService {
           Mono.from(createStockTransaction(tuple.getT1())
             .onErrorResume(ex -> cancelAccountTransaction(tuple.getT1().getAccountId(),tuple.getT2())
               .flatMap(canceledAccountTransaction -> Mono.error(ex))))))
-      .map(tuple -> PurchaseMapper.INSTANCE.entityToDto(tuple.getT1()));
+      .map(tuple -> PurchaseMapper.INSTANCE.entityToDto(tuple.getT1()))
+      .doOnNext(savedPurchaseDto -> this.cacheHelper.put("purchases",
+        savedPurchaseDto.getId(), savedPurchaseDto));
   }
   
   @Override
+  @CacheEvict(key = "#purchaseId", value = "purchases")
   @Transactional
   public Mono<PurchaseDto> cancelPurchaseById(Integer purchaseId) {
     log.debug("cancelPurchaseById");

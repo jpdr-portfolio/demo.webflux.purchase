@@ -1,5 +1,6 @@
 package com.jpdr.apps.demo.webflux.purchase.service;
 
+import com.jpdr.apps.demo.webflux.commons.caching.CacheHelper;
 import com.jpdr.apps.demo.webflux.purchase.exception.account.InsufficientFundsException;
 import com.jpdr.apps.demo.webflux.purchase.exception.stock.InsufficientQuantityException;
 import com.jpdr.apps.demo.webflux.purchase.model.Purchase;
@@ -72,6 +73,8 @@ class AppServiceTest {
   private AccountRepository accountRepository;
   @Mock
   private StockRepository stockRepository;
+  @Mock
+  private CacheHelper cacheHelper;
   
   
   @Test
@@ -87,9 +90,10 @@ class AppServiceTest {
     
     StepVerifier.create(appService.findPurchases(null))
       .assertNext(receivedPurchases -> {
-        for (PurchaseDto receivedPurchase : receivedPurchases)
-        assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),
-          receivedPurchase);
+        for (PurchaseDto receivedPurchase : receivedPurchases){
+          assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),
+            receivedPurchase);
+        }
       })
       .expectComplete()
       .verify();
