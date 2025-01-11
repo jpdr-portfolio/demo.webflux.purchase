@@ -46,7 +46,7 @@ class AccountRepositoryTest {
   @BeforeAll
   static void setupOnce() throws IOException {
     mockWebServer = new MockWebServer();
-    mockWebServer.start(9999);
+    mockWebServer.start(0);
   }
   
   
