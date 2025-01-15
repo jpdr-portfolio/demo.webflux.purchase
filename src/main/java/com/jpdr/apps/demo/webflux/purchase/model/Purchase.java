@@ -43,6 +43,10 @@ public class Purchase {
   String userEmail;
   @Column("user_address")
   String userAddress;
+  @Column("user_city")
+  String userCity;
+  @Column("user_country")
+  String userCountry;
   @Column("account_id")
   Long accountId;
   @Column("account_number")

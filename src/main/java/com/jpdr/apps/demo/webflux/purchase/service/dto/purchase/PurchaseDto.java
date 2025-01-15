@@ -45,6 +45,10 @@ public class PurchaseDto implements Serializable {
   @JsonInclude(Include.NON_NULL)
   String userAddress;
   @JsonInclude(Include.NON_NULL)
+  String userCity;
+  @JsonInclude(Include.NON_NULL)
+  String userCountry;
+  @JsonInclude(Include.NON_NULL)
   Long accountId;
   @JsonInclude(Include.NON_NULL)
   UUID accountNumber;

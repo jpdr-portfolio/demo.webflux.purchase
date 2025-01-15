@@ -24,6 +24,7 @@ import com.jpdr.apps.demo.webflux.purchase.service.mapper.PurchaseMapper;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -171,6 +172,8 @@ public class AppServiceImpl implements AppService {
         purchase.setPurchaseDescription(tuple.getT3().getProductName());
         purchase.setUserEmail(tuple.getT2().getEmail());
         purchase.setUserAddress(tuple.getT2().getAddress());
+        purchase.setUserCity(tuple.getT2().getCity());
+        purchase.setUserCountry(tuple.getT2().getCountry());
         purchase.setAccountNumber(tuple.getT4().getNumber());
         purchase.setProductName(tuple.getT3().getProductName());
         purchase.setPurchaseStatus(PurchaseStatusEnum.FULFILLED.getValue());
