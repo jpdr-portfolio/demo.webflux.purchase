@@ -65,7 +65,7 @@ class GlobalExceptionHandlerTest {
   @Test
   @DisplayName("Error - UserNotFoundException")
   void givenUserNotFoundExceptionWhenHandleUserNotFoundExceptionThenReturnError(){
-    UserNotFoundException exception = new UserNotFoundException(1, new RuntimeException());
+    UserNotFoundException exception = new UserNotFoundException(1L, new RuntimeException());
     ResponseEntity<Mono<ErrorDto>> response = globalExceptionHandler.handleException(exception);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
@@ -75,7 +75,7 @@ class GlobalExceptionHandlerTest {
   @Test
   @DisplayName("Error - AccountNotFoundException")
   void givenAccountNotFoundExceptionWhenHandleExceptionThenReturnError(){
-    AccountNotFoundException exception = new AccountNotFoundException(1, new RuntimeException());
+    AccountNotFoundException exception = new AccountNotFoundException(1L, new RuntimeException());
     ResponseEntity<Mono<ErrorDto>> response = globalExceptionHandler.handleException(exception);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
@@ -83,7 +83,7 @@ class GlobalExceptionHandlerTest {
   @Test
   @DisplayName("Error - ProductNotFoundException")
   void givenProductNotFoundExceptionWhenHandleExceptionThenReturnError(){
-    ProductNotFoundException exception = new ProductNotFoundException(1, new RuntimeException());
+    ProductNotFoundException exception = new ProductNotFoundException(1L, new RuntimeException());
     ResponseEntity<Mono<ErrorDto>> response = globalExceptionHandler.handleException(exception);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
@@ -91,7 +91,7 @@ class GlobalExceptionHandlerTest {
   @Test
   @DisplayName("Error - StockNotFoundException")
   void givenStockNotFoundExceptionWhenHandleExceptionThenReturnError(){
-    StockNotFoundException exception = new StockNotFoundException(1, new RuntimeException());
+    StockNotFoundException exception = new StockNotFoundException(1L, new RuntimeException());
     ResponseEntity<Mono<ErrorDto>> response = globalExceptionHandler.handleException(exception);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
@@ -108,7 +108,7 @@ class GlobalExceptionHandlerTest {
   @Test
   @DisplayName("Error - InsufficientFundsException")
   void givenInsufficientQuantityExceptionWhenHandleExceptionThenReturnError(){
-    InsufficientQuantityException exception = new InsufficientQuantityException(1, 0);
+    InsufficientQuantityException exception = new InsufficientQuantityException(1L, 0);
     ResponseEntity<Mono<ErrorDto>> response = globalExceptionHandler.handleException(exception);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
@@ -120,7 +120,7 @@ class GlobalExceptionHandlerTest {
   @Test
   @DisplayName("Error - UserRepositoryException")
   void givenUserRepositoryExceptionWhenHandleExceptionThenReturnError(){
-    UserRepositoryException exception = new UserRepositoryException(1, new RuntimeException());
+    UserRepositoryException exception = new UserRepositoryException(1L, new RuntimeException());
     ResponseEntity<Mono<ErrorDto>> response = globalExceptionHandler.handleException(exception);
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
   }
@@ -129,7 +129,7 @@ class GlobalExceptionHandlerTest {
   @Test
   @DisplayName("Error - ProductRepositoryException")
   void givenProductRepositoryExceptionWhenHandleExceptionThenReturnError(){
-    ProductRepositoryException exception = new ProductRepositoryException(1, new RuntimeException());
+    ProductRepositoryException exception = new ProductRepositoryException(1L, new RuntimeException());
     ResponseEntity<Mono<ErrorDto>> response = globalExceptionHandler.handleException(exception);
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
   }
@@ -138,7 +138,7 @@ class GlobalExceptionHandlerTest {
   @Test
   @DisplayName("Error - AccountRepositoryException")
   void givenAccountRepositoryExceptionWhenHandleExceptionThenReturnError(){
-    AccountRepositoryException exception = new AccountRepositoryException(1, new RuntimeException());
+    AccountRepositoryException exception = new AccountRepositoryException(1L, new RuntimeException());
     ResponseEntity<Mono<ErrorDto>> response = globalExceptionHandler.handleException(exception);
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
   }
@@ -147,7 +147,7 @@ class GlobalExceptionHandlerTest {
   @Test
   @DisplayName("Error - StockRepositoryException")
   void givenStockRepositoryExceptionWhenHandleExceptionThenReturnError(){
-    StockRepositoryException exception = new StockRepositoryException(1, new RuntimeException());
+    StockRepositoryException exception = new StockRepositoryException(1L, new RuntimeException());
     ResponseEntity<Mono<ErrorDto>> response = globalExceptionHandler.handleException(exception);
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
   }

@@ -5,8 +5,8 @@ import com.jpdr.apps.demo.webflux.purchase.service.dto.stock.StockDto;
 import com.jpdr.apps.demo.webflux.purchase.service.dto.stock.StockTransactionDto;
 import reactor.core.publisher.Mono;
 
-public interface StockRepository extends BaseRepository<StockDto, Integer> {
+public interface StockRepository extends BaseRepository<StockDto, Long> {
 
-  Mono<StockTransactionDto> createTransaction(Integer productId, StockTransactionDto transactionDto);
+  Mono<StockTransactionDto> createTransaction(Long productId, StockTransactionDto transactionDto);
 
 }

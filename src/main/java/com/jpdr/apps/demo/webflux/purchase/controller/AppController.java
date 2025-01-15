@@ -27,7 +27,7 @@ public class AppController {
   
   @GetMapping("/purchases")
   public Mono<ResponseEntity<List<PurchaseDto>>> findPurchases(
-    @RequestParam(name = "userId", required = false) Integer userId ){
+    @RequestParam(name = "userId", required = false) Long userId ){
     return this.appService.findPurchases(userId)
       .doOnNext(purchases -> this.eventLogger.logEvent("findPurchases", purchases))
       .map(purchases -> new ResponseEntity<>(purchases, HttpStatus.OK));
@@ -42,7 +42,7 @@ public class AppController {
   
   @GetMapping("/purchases/{purchaseId}")
   public Mono<ResponseEntity<PurchaseDto>> findPurchaseById(
-    @PathVariable(name = "purchaseId") Integer purchaseId ){
+    @PathVariable(name = "purchaseId") Long purchaseId ){
     return this.appService.findPurchaseById(purchaseId)
       .doOnNext(purchase -> this.eventLogger.logEvent("findPurchaseById", purchase))
       .map(purchase -> new ResponseEntity<>(purchase, HttpStatus.OK));
@@ -50,7 +50,7 @@ public class AppController {
   
   @PostMapping("/purchases/{purchaseId}/cancel")
   public Mono<ResponseEntity<PurchaseDto>> cancelPurchase(
-    @PathVariable(name = "purchaseId") Integer purchaseId){
+    @PathVariable(name = "purchaseId") Long purchaseId){
     return this.appService.cancelPurchaseById(purchaseId)
       .doOnNext(purchase -> this.eventLogger.logEvent("cancelPurchaseById", purchase))
       .map(purchase -> new ResponseEntity<>(purchase, HttpStatus.OK));

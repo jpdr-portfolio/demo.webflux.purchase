@@ -28,7 +28,7 @@ public class AccountRepositoryImpl implements AccountRepository {
   
   @Override
   @Cacheable(key = "#accountId", value = "accounts", sync = true)
-  public Mono<AccountDto> getById (Integer accountId) {
+  public Mono<AccountDto> getById (Long accountId) {
     return this.webClient.get()
       .uri("/accounts/{accountId}", accountId)
       .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -44,7 +44,7 @@ public class AccountRepositoryImpl implements AccountRepository {
   }
   
   @Override
-  public Mono<AccountTransactionDto> createTransaction(Integer accountId, AccountTransactionDto transaction) {
+  public Mono<AccountTransactionDto> createTransaction(Long accountId, AccountTransactionDto transaction) {
     return this.webClient.post()
       .uri("/accounts/{accountId}/transactions", accountId)
       .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

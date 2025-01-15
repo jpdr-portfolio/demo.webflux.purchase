@@ -67,7 +67,7 @@ class UserRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(userRepository.getById(1))
+    StepVerifier.create(userRepository.getById(1L))
       .assertNext(dto -> {
         assertEquals(expectedUser.getId(), dto.getId());
         assertEquals(expectedUser.getName(), dto.getName());
@@ -93,7 +93,7 @@ class UserRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(userRepository.getById(1))
+    StepVerifier.create(userRepository.getById(1L))
       .expectError(UserNotFoundException.class)
       .verify();
   }
@@ -107,7 +107,7 @@ class UserRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(userRepository.getById(1))
+    StepVerifier.create(userRepository.getById(1L))
       .expectError(UserRepositoryException.class)
       .verify();
   }

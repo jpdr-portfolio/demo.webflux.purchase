@@ -53,7 +53,7 @@ import static com.jpdr.apps.demo.webflux.purchase.util.TestDataGenerator.getUser
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -109,13 +109,13 @@ class AppServiceTest {
       .collect(Collectors.toMap(Purchase::getId, Function.identity()));
     UserDto userDto = getUserDto();
     
-    when(userRepository.getById(anyInt()))
+    when(userRepository.getById(anyLong()))
       .thenReturn(Mono.just(userDto));
     
-    when(purchaseRepository.findAllByUserId(anyInt()))
+    when(purchaseRepository.findAllByUserId(anyLong()))
       .thenReturn(Flux.fromIterable(expectedPurchases));
     
-    StepVerifier.create(appService.findPurchases(1))
+    StepVerifier.create(appService.findPurchases(1L))
       .assertNext(receivedPurchases -> {
         for (PurchaseDto receivedPurchase : receivedPurchases)
           assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),
@@ -131,10 +131,10 @@ class AppServiceTest {
     
     Purchase expectedPurchase = getPurchase();
     
-    when(purchaseRepository.findById(anyInt()))
+    when(purchaseRepository.findById(anyLong()))
       .thenReturn(Mono.just(expectedPurchase));
     
-    StepVerifier.create(appService.findPurchaseById(1))
+    StepVerifier.create(appService.findPurchaseById(1L))
       .assertNext(receivedPurchase -> assertPurchase(expectedPurchase,
         receivedPurchase))
       .expectComplete()
@@ -156,17 +156,17 @@ class AppServiceTest {
       getStockTransactionDto(StockTransactionTypeEnum.DECREASE, 1);
     Purchase expectedPurchase = getPurchase();
     
-    when(userRepository.getById(anyInt()))
+    when(userRepository.getById(anyLong()))
       .thenReturn(Mono.just(userDto));
-    when(productRepository.getById(anyInt()))
+    when(productRepository.getById(anyLong()))
       .thenReturn(Mono.just(productDto));
-    when(accountRepository.getById(anyInt()))
+    when(accountRepository.getById(anyLong()))
       .thenReturn(Mono.just(accountDto));
-    when(stockRepository.getById(anyInt()))
+    when(stockRepository.getById(anyLong()))
       .thenReturn(Mono.just(stockDto));
-    when(accountRepository.createTransaction(anyInt(), any(AccountTransactionDto.class)))
+    when(accountRepository.createTransaction(anyLong(), any(AccountTransactionDto.class)))
       .thenReturn(Mono.just(accountTransactionDto));
-    when(stockRepository.createTransaction(anyInt(), any(StockTransactionDto.class)))
+    when(stockRepository.createTransaction(anyLong(), any(StockTransactionDto.class)))
       .thenReturn(Mono.just(stockTransactionDto));
     when(purchaseRepository.save(any(Purchase.class)))
       .thenReturn(Mono.just(expectedPurchase));
@@ -177,8 +177,8 @@ class AppServiceTest {
         assertEquals(userDto.getId(), receivedPurchase.getUserId());
         assertEquals(accountDto.getId(), receivedPurchase.getAccountId());
         assertEquals(productDto.getId(), receivedPurchase.getProductId());
-        assertEquals(1, receivedPurchase.getQuantity());
-        assertEquals(TOTAL_PRICE, receivedPurchase.getTotalPrice());
+        assertEquals(1, receivedPurchase.getProductQuantity());
+        assertEquals(TOTAL_PRICE, receivedPurchase.getProductTotalPrice());
       })
       .expectComplete()
       .verify();
@@ -196,13 +196,13 @@ class AppServiceTest {
     AccountDto accountDto = getAccountDto();
     accountDto.setBalance(BigDecimal.ZERO);
     
-    when(userRepository.getById(anyInt()))
+    when(userRepository.getById(anyLong()))
       .thenReturn(Mono.just(userDto));
-    when(productRepository.getById(anyInt()))
+    when(productRepository.getById(anyLong()))
       .thenReturn(Mono.just(productDto));
-    when(accountRepository.getById(anyInt()))
+    when(accountRepository.getById(anyLong()))
       .thenReturn(Mono.just(accountDto));
-    when(stockRepository.getById(anyInt()))
+    when(stockRepository.getById(anyLong()))
       .thenReturn(Mono.just(stockDto));
     
     StepVerifier.create(appService.createPurchase(requestPurchase))
@@ -222,13 +222,13 @@ class AppServiceTest {
     stockDto.setQuantity(0);
     AccountDto accountDto = getAccountDto();
     
-    when(userRepository.getById(anyInt()))
+    when(userRepository.getById(anyLong()))
       .thenReturn(Mono.just(userDto));
-    when(productRepository.getById(anyInt()))
+    when(productRepository.getById(anyLong()))
       .thenReturn(Mono.just(productDto));
-    when(accountRepository.getById(anyInt()))
+    when(accountRepository.getById(anyLong()))
       .thenReturn(Mono.just(accountDto));
-    when(stockRepository.getById(anyInt()))
+    when(stockRepository.getById(anyLong()))
       .thenReturn(Mono.just(stockDto));
     
     StepVerifier.create(appService.createPurchase(requestPurchase))
@@ -250,20 +250,20 @@ class AppServiceTest {
     StockTransactionDto stockTransactionDto =
       getStockTransactionDto(StockTransactionTypeEnum.DECREASE, 1);
     
-    when(purchaseRepository.findById(anyInt()))
+    when(purchaseRepository.findById(anyLong()))
       .thenReturn(Mono.just(expectedPurchase));
-    when(accountRepository.createTransaction(anyInt(), any(AccountTransactionDto.class)))
+    when(accountRepository.createTransaction(anyLong(), any(AccountTransactionDto.class)))
       .thenReturn(Mono.just(accountTransactionDto));
-    when(stockRepository.createTransaction(anyInt(), any(StockTransactionDto.class)))
+    when(stockRepository.createTransaction(anyLong(), any(StockTransactionDto.class)))
       .thenReturn(Mono.just(stockTransactionDto));
     when(purchaseRepository.save(any(Purchase.class)))
       .thenReturn(Mono.just(expectedPurchase));
     
-    StepVerifier.create(appService.cancelPurchaseById(1))
+    StepVerifier.create(appService.cancelPurchaseById(1L))
       .assertNext(receivedPurchase -> {
         assertEquals(1L, receivedPurchase.getId());
-        assertEquals(PurchaseStatusEnum.CANCELED.getValue(), receivedPurchase.getStatus());
-        assertNotNull(receivedPurchase.getCancellationDate());
+        assertEquals(PurchaseStatusEnum.CANCELED.getValue(), receivedPurchase.getPurchaseStatus());
+        assertNotNull(receivedPurchase.getPurchaseCancellationDate());
       })
       .expectComplete()
       .verify();
@@ -282,14 +282,12 @@ class AppServiceTest {
     assertEquals(entity.getId(), dto.getId());
     assertEquals(entity.getAccountId(), dto.getAccountId());
     assertEquals(entity.getAccountNumber(), dto.getAccountNumber());
-    assertEquals(entity.getQuantity(), dto.getQuantity());
-    assertEquals(entity.getDescription(), dto.getDescription());
+    assertEquals(entity.getProductQuantity(), dto.getProductQuantity());
+    assertEquals(entity.getPurchaseDescription(), dto.getPurchaseDescription());
     assertEquals(entity.getProductId(), dto.getProductId());
     assertEquals(entity.getProductName(), dto.getProductName());
-    assertEquals(entity.getRetailerId(), dto.getRetailerId());
-    assertEquals(entity.getRetailerName(), dto.getRetailerName());
-    assertEquals(entity.getUnitPrice(), dto.getUnitPrice());
-    assertEquals(entity.getTotalPrice(), dto.getTotalPrice());
+    assertEquals(entity.getProductUnitPrice(), dto.getProductUnitPrice());
+    assertEquals(entity.getProductTotalPrice(), dto.getProductTotalPrice());
   }
   
 

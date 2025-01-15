@@ -72,7 +72,7 @@ class StockRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(stockRepository.getById(1))
+    StepVerifier.create(stockRepository.getById(1L))
       .assertNext(receivedStock -> {
         assertEquals(expectedStock.getProductId(), receivedStock.getProductId());
         assertEquals(expectedStock.getProductName(), receivedStock.getProductName());
@@ -99,7 +99,7 @@ class StockRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(stockRepository.getById(1))
+    StepVerifier.create(stockRepository.getById(1L))
       .expectError(StockNotFoundException.class)
       .verify();
   }
@@ -114,7 +114,7 @@ class StockRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(stockRepository.getById(1))
+    StepVerifier.create(stockRepository.getById(1L))
       .expectError(StockRepositoryException.class)
       .verify();
   }
@@ -139,7 +139,7 @@ class StockRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(stockRepository.createTransaction(1,requestTransaction))
+    StepVerifier.create(stockRepository.createTransaction(1L,requestTransaction))
       .assertNext(receivedTransaction -> {
         assertEquals(expectedTransaction.getId(), receivedTransaction.getId());
         assertEquals(expectedTransaction.getQuantity(), receivedTransaction.getQuantity());
@@ -164,7 +164,7 @@ class StockRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(stockRepository.createTransaction(1, requestTransaction))
+    StepVerifier.create(stockRepository.createTransaction(1L, requestTransaction))
       .expectError(StockNotFoundException.class)
       .verify();
   }
@@ -181,7 +181,7 @@ class StockRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(stockRepository.createTransaction(1, requestTransaction))
+    StepVerifier.create(stockRepository.createTransaction(1L, requestTransaction))
       .expectError(StockRepositoryException.class)
       .verify();
   }

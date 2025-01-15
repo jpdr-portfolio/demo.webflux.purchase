@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -21,10 +22,10 @@ import java.math.BigDecimal;
 public class AccountTransactionDto implements Serializable {
   
   @JsonInclude(Include.NON_NULL)
-  Integer id;
+  Long id;
   @JsonInclude(Include.NON_EMPTY)
   String transactionDate;
-  @JsonInclude(Include.NON_NULL)
+  @NonNull
   BigDecimal transactionAmount;
   @JsonInclude(Include.NON_NULL)
   AccountTransactionTypeEnum transactionType;

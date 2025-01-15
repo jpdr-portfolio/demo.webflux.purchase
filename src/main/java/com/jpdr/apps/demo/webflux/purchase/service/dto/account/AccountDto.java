@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -21,17 +22,16 @@ import java.util.UUID;
 public class AccountDto implements Serializable {
   
   @JsonInclude(Include.NON_NULL)
-  Integer id;
+  Long id;
   @JsonInclude(Include.NON_NULL)
   UUID number;
-  @JsonInclude(Include.NON_NULL)
-  Integer ownerId;
-  @JsonInclude(Include.NON_NULL)
+  @NonNull
+  Long ownerId;
   String ownerName;
   @JsonInclude(Include.NON_NULL)
   BigDecimal balance;
   @JsonInclude(Include.NON_NULL)
-  Integer lastTransactionId;
+  Long lastTransactionId;
   @JsonInclude(Include.NON_EMPTY)
   String lastTransactionDate;
   @JsonInclude(Include.NON_NULL)

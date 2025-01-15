@@ -51,7 +51,7 @@ public class AppServiceImpl implements AppService {
   private final CacheHelper cacheHelper;
   
   @Override
-  public Mono<List<PurchaseDto>> findPurchases(Integer userId) {
+  public Mono<List<PurchaseDto>> findPurchases(Long userId) {
     return Mono.just(Optional.ofNullable(userId))
       .flatMap(optional -> {
           if (optional.isPresent()) {
@@ -73,7 +73,7 @@ public class AppServiceImpl implements AppService {
   
   
   @Override
-  public Mono<List<PurchaseDto>> findPurchasesByUserId(Integer userId) {
+  public Mono<List<PurchaseDto>> findPurchasesByUserId(Long userId) {
     log.debug("findPurchasesByUserId");
     return this.userRepository.getById(userId)
       .map(UserDto::getId)
@@ -85,7 +85,7 @@ public class AppServiceImpl implements AppService {
   
   @Override
   @Cacheable(key = "#purchaseId", value = "purchases", sync = true)
-  public Mono<PurchaseDto> findPurchaseById(Integer purchaseId) {
+  public Mono<PurchaseDto> findPurchaseById(Long purchaseId) {
     log.debug("findPurchaseById");
     return this.purchaseRepository.findById(purchaseId)
       .map(PurchaseMapper.INSTANCE::entityToDto)
@@ -124,7 +124,7 @@ public class AppServiceImpl implements AppService {
   @Override
   @CacheEvict(key = "#purchaseId", value = "purchases")
   @Transactional
-  public Mono<PurchaseDto> cancelPurchaseById(Integer purchaseId) {
+  public Mono<PurchaseDto> cancelPurchaseById(Long purchaseId) {
     log.debug("cancelPurchaseById");
     return this.purchaseRepository.findById(purchaseId)
       .flatMap(this::getNewCancelledPurchase)
@@ -148,33 +148,33 @@ public class AppServiceImpl implements AppService {
         (purchase.getUserId() != null ) &&
           (purchase.getProductId() != null) &&
             (purchase.getProductId() != null) &&
-              (purchase.getQuantity() > 0)  &&
-                (purchase.getUnitPrice().compareTo(BigDecimal.ZERO) > 0) &&
-                  (purchase.getUnitPrice()
-                    .multiply(BigDecimal.valueOf(purchase.getQuantity()))
-                    .compareTo(purchase.getTotalPrice()) == 0))
+              (purchase.getProductQuantity() > 0)  &&
+                (purchase.getProductUnitPrice().compareTo(BigDecimal.ZERO) > 0) &&
+                  (purchase.getProductUnitPrice()
+                    .multiply(BigDecimal.valueOf(purchase.getProductQuantity()))
+                    .compareTo(purchase.getProductTotalPrice()) == 0))
       .switchIfEmpty(Mono.error(new ValidationException("Invalid purchase values")));
   }
   
   private Mono<Purchase> getPurchaseFromData(Tuple5<PurchaseDto, UserDto, ProductDto, AccountDto, StockDto> purchaseData){
     return Mono.just(purchaseData)
-      .filter(tuple -> tuple.getT4().getBalance().compareTo(tuple.getT1().getTotalPrice()) >= 0)
+      .filter(tuple ->
+        tuple.getT4().getBalance().compareTo(tuple.getT1().getProductTotalPrice()) >= 0)
       .switchIfEmpty(Mono.error(new InsufficientFundsException(purchaseData.getT4().getBalance())))
-      .filter(tuple -> tuple.getT5().getQuantity() >= purchaseData.getT1().getQuantity())
+      .filter(tuple ->
+        tuple.getT5().getQuantity() >= purchaseData.getT1().getProductQuantity())
       .switchIfEmpty(Mono.error(new InsufficientQuantityException(purchaseData.getT1().getProductId(),
           purchaseData.getT5().getQuantity())))
       .map(tuple -> {
         Purchase purchase = PurchaseMapper.INSTANCE.dtoToEntity(tuple.getT1());
-        purchase.setCreationDate(OffsetDateTime.now());
-        purchase.setDescription(tuple.getT3().getName());
+        purchase.setPurchaseDate(OffsetDateTime.now());
+        purchase.setPurchaseDescription(tuple.getT3().getProductName());
         purchase.setUserEmail(tuple.getT2().getEmail());
         purchase.setUserAddress(tuple.getT2().getAddress());
         purchase.setAccountNumber(tuple.getT4().getNumber());
-        purchase.setProductName(tuple.getT3().getName());
-        purchase.setRetailerId(tuple.getT3().getRetailerId());
-        purchase.setRetailerName(tuple.getT3().getRetailerName());
-        purchase.setStatus(PurchaseStatusEnum.FULFILLED.getValue());
-        purchase.setCancellationDate(null);
+        purchase.setProductName(tuple.getT3().getProductName());
+        purchase.setPurchaseStatus(PurchaseStatusEnum.FULFILLED.getValue());
+        purchase.setPurchaseCancellationDate(null);
         return purchase;
       });
   }
@@ -187,10 +187,11 @@ public class AppServiceImpl implements AppService {
         Mono.just(savedPurchase),
         Mono.just(AccountTransactionDto.builder()
           .transactionType(AccountTransactionTypeEnum.DEBIT)
-          .transactionAmount(savedPurchase.getTotalPrice())
+          .transactionAmount(savedPurchase.getProductTotalPrice())
           .transactionDescription("Purchase Id: " + savedPurchase.getId())
           .build()))
-      .flatMap(tuple -> this.accountRepository.createTransaction(tuple.getT1().getAccountId(), tuple.getT2()));
+      .flatMap(tuple ->
+        this.accountRepository.createTransaction(tuple.getT1().getAccountId(), tuple.getT2()));
   }
   
   private Mono<StockTransactionDto> createStockTransaction(Purchase savedPurchase){
@@ -198,14 +199,15 @@ public class AppServiceImpl implements AppService {
         Mono.just(savedPurchase),
         Mono.just(StockTransactionDto.builder()
           .transactionType(StockTransactionTypeEnum.DECREASE)
-          .quantity(savedPurchase.getQuantity())
+          .quantity(savedPurchase.getProductQuantity())
           .unitPrice(BigDecimal.ZERO)
           .description("Purchase Id: " + savedPurchase.getId())
           .build()))
-      .flatMap(tuple -> this.stockRepository.createTransaction(tuple.getT1().getProductId(), tuple.getT2()));
+      .flatMap(tuple ->
+        this.stockRepository.createTransaction(tuple.getT1().getProductId(), tuple.getT2()));
   }
   
-  private Mono<AccountTransactionDto> cancelAccountTransaction(Integer accountId, AccountTransactionDto transactionDto){
+  private Mono<AccountTransactionDto> cancelAccountTransaction(Long accountId, AccountTransactionDto transactionDto){
     return Mono.zip(
         Mono.just(accountId),
         Mono.just(AccountTransactionDto.builder()
@@ -221,10 +223,11 @@ public class AppServiceImpl implements AppService {
         Mono.just(purchase),
         Mono.just(AccountTransactionDto.builder()
           .transactionType(AccountTransactionTypeEnum.CREDIT)
-          .transactionAmount(purchase.getTotalPrice())
+          .transactionAmount(purchase.getProductTotalPrice())
           .transactionDescription(CANCELED + " Purchase Id: " + purchase.getId())
           .build()))
-      .flatMap(tuple -> this.accountRepository.createTransaction(tuple.getT1().getAccountId(), tuple.getT2()));
+      .flatMap(tuple ->
+        this.accountRepository.createTransaction(tuple.getT1().getAccountId(), tuple.getT2()));
   }
   
   private Mono<StockTransactionDto> cancelStockTransaction(Purchase purchase){
@@ -232,18 +235,19 @@ public class AppServiceImpl implements AppService {
       Mono.just(purchase),
       Mono.just(StockTransactionDto.builder()
         .transactionType(StockTransactionTypeEnum.INCREASE)
-        .quantity(purchase.getQuantity())
+        .quantity(purchase.getProductQuantity())
         .unitPrice(BigDecimal.ZERO)
         .description(CANCELED + " Purchase Id: " + purchase.getId())
         .build()))
-      .flatMap(tuple -> this.stockRepository.createTransaction(tuple.getT1().getProductId(), tuple.getT2()));
+      .flatMap(tuple ->
+        this.stockRepository.createTransaction(tuple.getT1().getProductId(), tuple.getT2()));
   }
   
   private Mono<Purchase> getNewCancelledPurchase(Purchase purchase){
     return Mono.just(purchase)
       .map(updatedPurchase -> {
-        updatedPurchase.setStatus(PurchaseStatusEnum.CANCELED.getValue());
-        updatedPurchase.setCancellationDate(OffsetDateTime.now());
+        updatedPurchase.setPurchaseStatus(PurchaseStatusEnum.CANCELED.getValue());
+        updatedPurchase.setPurchaseCancellationDate(OffsetDateTime.now());
         return updatedPurchase;
         });
   }

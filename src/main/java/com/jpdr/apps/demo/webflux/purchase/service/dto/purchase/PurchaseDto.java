@@ -23,36 +23,32 @@ public class PurchaseDto implements Serializable {
   @JsonInclude(Include.NON_NULL)
   Long id;
   @JsonInclude(Include.NON_EMPTY)
-  String creationDate;
+  String purchaseDate;
   @JsonInclude(Include.NON_NULL)
-  String description;
+  String purchaseDescription;
   @JsonInclude(Include.NON_NULL)
-  Integer quantity;
+  String purchaseStatus;
   @JsonInclude(Include.NON_NULL)
-  BigDecimal unitPrice;
+  Long productId;
   @JsonInclude(Include.NON_NULL)
-  BigDecimal totalPrice;
+  String productName;
   @JsonInclude(Include.NON_NULL)
-  Integer userId;
+  Integer productQuantity;
+  @JsonInclude(Include.NON_NULL)
+  BigDecimal productUnitPrice;
+  @JsonInclude(Include.NON_NULL)
+  BigDecimal productTotalPrice;
+  @JsonInclude(Include.NON_NULL)
+  Long userId;
   @JsonInclude(Include.NON_NULL)
   String userEmail;
   @JsonInclude(Include.NON_NULL)
   String userAddress;
   @JsonInclude(Include.NON_NULL)
-  String status;
-  @JsonInclude(Include.NON_NULL)
-  Integer accountId;
+  Long accountId;
   @JsonInclude(Include.NON_NULL)
   UUID accountNumber;
   @JsonInclude(Include.NON_NULL)
-  Integer productId;
-  @JsonInclude(Include.NON_NULL)
-  String productName;
-  @JsonInclude(Include.NON_NULL)
-  Integer retailerId;
-  @JsonInclude(Include.NON_NULL)
-  String retailerName;
-  @JsonInclude(Include.NON_NULL)
-  String cancellationDate;
+  String purchaseCancellationDate;
   
 }

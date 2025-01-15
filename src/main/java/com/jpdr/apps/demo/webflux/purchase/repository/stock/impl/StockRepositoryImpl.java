@@ -28,7 +28,7 @@ public class StockRepositoryImpl implements StockRepository {
   
   @Override
   @Cacheable(key = "#productId", value = "stock", sync = true)
-  public Mono<StockDto> getById (Integer productId) {
+  public Mono<StockDto> getById (Long productId) {
     return this.webClient.get()
       .uri("/stock/{productId}", productId)
       .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -44,7 +44,7 @@ public class StockRepositoryImpl implements StockRepository {
   }
   
   @Override
-  public Mono<StockTransactionDto> createTransaction(Integer productId, StockTransactionDto transactionDto) {
+  public Mono<StockTransactionDto> createTransaction(Long productId, StockTransactionDto transactionDto) {
     return this.webClient.post()
       .uri("/stock/{productId}/transactions", productId)
       .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

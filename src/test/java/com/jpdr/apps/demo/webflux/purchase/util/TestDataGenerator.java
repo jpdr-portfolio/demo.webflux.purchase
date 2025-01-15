@@ -24,11 +24,14 @@ public class TestDataGenerator {
   public static final String CREATION_DATE = "2024-10-14T10:39:45.732446-03:00";
   public static final String PRODUCT_NAME = "Product Name";
   public static final String CATEGORY_NAME = "Category Name";
+  public static final String SUB_CATEGORY_NAME = "Sub-Category Name";
   public static final String RETAILER_NAME = "Retailer Name";
   public static final String DESCRIPTION = "Description";
   public static final String NAME = "John Smith";
   public static final String EMAIL = "johnsmith@mail.com";
-  public static final String ADDRESS = "123 Street, City, State";
+  public static final String ADDRESS = "123 Street";
+  public static final String CITY = "City";
+  public static final String COUNTRY = "Country";
   public static final BigDecimal TOTAL_PRICE = new BigDecimal("100.00");
   public static final UUID NUMBER = UUID.fromString("f9bcbc7c-8bbe-4306-8feb-7fd598686d4e");
   
@@ -36,22 +39,20 @@ public class TestDataGenerator {
   public static PurchaseDto getNewPurchaseDto(){
     return PurchaseDto.builder()
       .id(null)
-      .userId(1)
+      .userId(1L)
       .userAddress(null)
       .userEmail(null)
-      .description(null)
-      .retailerId(null)
-      .retailerName(null)
-      .accountId(1)
+      .purchaseDescription(null)
+      .accountId(1L)
       .accountNumber(null)
-      .productId(1)
+      .productId(1L)
       .productName(null)
-      .quantity(1)
-      .unitPrice(TOTAL_PRICE)
-      .totalPrice(TOTAL_PRICE)
-      .status(null)
-      .creationDate(null)
-      .cancellationDate(null)
+      .productQuantity(1)
+      .productUnitPrice(TOTAL_PRICE)
+      .productTotalPrice(TOTAL_PRICE)
+      .purchaseStatus(null)
+      .purchaseDate(null)
+      .purchaseCancellationDate(null)
       .build();
   }
   
@@ -60,10 +61,10 @@ public class TestDataGenerator {
   }
   
   public static PurchaseDto getPurchaseDto(){
-    return getPurchaseDto(1);
+    return getPurchaseDto(1L);
   }
   
-  public static PurchaseDto getPurchaseDto(int purchaseId){
+  public static PurchaseDto getPurchaseDto(long purchaseId){
     return PurchaseMapper.INSTANCE.entityToDto(getPurchase(purchaseId));
   }
   
@@ -73,38 +74,38 @@ public class TestDataGenerator {
   
   
   public static Purchase getPurchase(){
-    return getPurchase(1);
+    return getPurchase(1L);
   }
   
   
   public static Purchase getPurchase(long purchaseId){
     return Purchase.builder()
       .id(purchaseId)
-      .description(DESCRIPTION)
-      .accountId(1)
-      .userId(1)
+      .purchaseDescription(DESCRIPTION)
+      .accountId(1L)
+      .userId(1L)
       .userAddress(ADDRESS)
       .userEmail(EMAIL)
-      .retailerId(1)
-      .retailerName(RETAILER_NAME)
-      .productId(1)
+      .productId(1L)
       .productName(PRODUCT_NAME)
-      .quantity(1)
-      .status(PurchaseStatusEnum.FULFILLED.getValue())
-      .totalPrice(TOTAL_PRICE)
+      .productQuantity(1)
+      .purchaseStatus(PurchaseStatusEnum.FULFILLED.getValue())
+      .productTotalPrice(TOTAL_PRICE)
       .build();
   }
   
   public static UserDto getUserDto(){
-    return getUserDto(1);
+    return getUserDto(1L);
   }
   
-  public static UserDto getUserDto(int id){
+  public static UserDto getUserDto(long id){
     return UserDto.builder()
       .id(id)
       .name(NAME)
       .email(EMAIL)
       .address(ADDRESS)
+      .city(CITY)
+      .country(COUNTRY)
       .isActive(true)
       .creationDate(CREATION_DATE)
       .deletionDate(null)
@@ -113,15 +114,17 @@ public class TestDataGenerator {
   
   
   public static ProductDto getProductDto(){
-    return getProductDto(1);
+    return getProductDto(1L);
   }
-  public static ProductDto getProductDto(int productId){
+  public static ProductDto getProductDto(long productId){
     return ProductDto.builder()
       .id(productId)
-      .name(PRODUCT_NAME)
-      .categoryId(1)
+      .productName(PRODUCT_NAME)
+      .categoryId(1L)
       .categoryName(CATEGORY_NAME)
-      .retailerId(1)
+      .subCategoryId(1L)
+      .subCategoryName(SUB_CATEGORY_NAME)
+      .retailerId(1L)
       .retailerName(RETAILER_NAME)
       .isActive(true)
       .creationDate(CREATION_DATE)
@@ -129,31 +132,29 @@ public class TestDataGenerator {
       .build();
   }
   
-
-  
   public static StockDto getStockDto(){
-    return getStockDto(1);
+    return getStockDto(1L);
   }
   
-  public static StockDto getStockDto(int productId){
+  public static StockDto getStockDto(long productId){
     return StockDto.builder()
       .productId(productId)
       .quantity(100)
       .unitPrice(BigDecimal.valueOf(100.00))
-      .lastTransactionId(1)
+      .lastTransactionId(1L)
       .lastTransactionDate(CREATION_DATE)
       .build();
   }
   
   
   public static AccountDto getAccountDto(){
-    return getAccountDto(1);
+    return getAccountDto(1L);
   }
   
-  public static AccountDto getAccountDto(int accountId){
+  public static AccountDto getAccountDto(long accountId){
     return AccountDto.builder()
       .id(accountId)
-      .ownerId(1)
+      .ownerId(1L)
       .ownerName(NAME)
       .creationDate(CREATION_DATE)
       .balance(TOTAL_PRICE)
@@ -168,7 +169,7 @@ public class TestDataGenerator {
   public static AccountTransactionDto getAccountTransactionDto(
     AccountTransactionTypeEnum type, BigDecimal amount, BigDecimal previousBalance){
     return AccountTransactionDto.builder()
-      .id(1)
+      .id(1L)
       .transactionDate((CREATION_DATE))
       .transactionAmount(amount)
       .transactionDescription(DESCRIPTION)
@@ -181,8 +182,8 @@ public class TestDataGenerator {
   
   public static StockTransactionDto getStockTransactionDto(StockTransactionTypeEnum type, int quantity){
     return StockTransactionDto.builder()
-      .id(1)
-      .productId(1)
+      .id(1L)
+      .productId(1L)
       .quantity(quantity)
       .description(DESCRIPTION)
       .unitPrice(BigDecimal.ZERO)

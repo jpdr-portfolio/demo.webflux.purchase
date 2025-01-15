@@ -19,17 +19,17 @@ import java.io.Serializable;
 public class UserDto implements Serializable {
   
   @JsonInclude(Include.NON_NULL)
-  Integer id;
+  Long id;
   @JsonInclude(Include.NON_NULL)
   String name;
-  @JsonInclude(Include.NON_NULL)
-  String email;
-  @JsonInclude(Include.NON_NULL)
-  String address;
   @JsonInclude(Include.NON_NULL)
   String birthDate;
   @JsonInclude(Include.NON_NULL)
   String gender;
+  @JsonInclude(Include.NON_NULL)
+  String email;
+  @JsonInclude(Include.NON_NULL)
+  String address;
   @JsonInclude(Include.NON_NULL)
   String city;
   @JsonInclude(Include.NON_NULL)

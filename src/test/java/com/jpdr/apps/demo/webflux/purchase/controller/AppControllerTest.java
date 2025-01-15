@@ -26,7 +26,7 @@ import static com.jpdr.apps.demo.webflux.purchase.util.TestDataGenerator.getPurc
 import static com.jpdr.apps.demo.webflux.purchase.util.TestDataGenerator.getPurchasesDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 
@@ -79,7 +79,7 @@ class AppControllerTest {
     
     String expectedBody = objectMapper.writeValueAsString(expectedPurchases);
     
-    when(appService.findPurchases(anyInt()))
+    when(appService.findPurchases(anyLong()))
       .thenReturn(Mono.just(expectedPurchases));
     
     FluxExchangeResult<String> exchangeResult = this.webTestClient.get()
@@ -104,7 +104,7 @@ class AppControllerTest {
     
     PurchaseDto expectedBody = getPurchaseDto();
     
-    when(appService.findPurchaseById(anyInt()))
+    when(appService.findPurchaseById(anyLong()))
       .thenReturn(Mono.just(expectedBody));
     
     FluxExchangeResult<PurchaseDto> exchangeResult = this.webTestClient.get()
@@ -155,7 +155,7 @@ class AppControllerTest {
     
     PurchaseDto expectedBody = getPurchaseDto();
     
-    when(appService.cancelPurchaseById(anyInt()))
+    when(appService.cancelPurchaseById(anyLong()))
       .thenReturn(Mono.just(expectedBody));
     
     FluxExchangeResult<PurchaseDto> exchangeResult = this.webTestClient.post()

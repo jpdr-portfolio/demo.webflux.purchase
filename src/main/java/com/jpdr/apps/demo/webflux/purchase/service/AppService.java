@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface AppService {
   
-  Mono<List<PurchaseDto>> findPurchases(Integer userId);
+  Mono<List<PurchaseDto>> findPurchases(Long userId);
   Mono<List<PurchaseDto>> findAllPurchases();
-  Mono<List<PurchaseDto>> findPurchasesByUserId(Integer userId);
-  Mono<PurchaseDto> findPurchaseById(Integer purchaseId);
+  Mono<List<PurchaseDto>> findPurchasesByUserId(Long userId);
+  Mono<PurchaseDto> findPurchaseById(Long purchaseId);
   Mono<PurchaseDto> createPurchase(PurchaseDto purchaseDto);
-  Mono<PurchaseDto> cancelPurchaseById(Integer purchaseId);
+  Mono<PurchaseDto> cancelPurchaseById(Long purchaseId);
 
 }

@@ -72,7 +72,7 @@ class AccountRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(accountRepository.getById(1))
+    StepVerifier.create(accountRepository.getById(1L))
       .assertNext(receivedAccount -> {
         assertEquals(expectedAccount.getId(), receivedAccount.getId());
         assertEquals(expectedAccount.getNumber(), receivedAccount.getNumber());
@@ -101,7 +101,7 @@ class AccountRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(accountRepository.getById(1))
+    StepVerifier.create(accountRepository.getById(1L))
       .expectError(AccountNotFoundException.class)
       .verify();
   }
@@ -116,7 +116,7 @@ class AccountRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(accountRepository.getById(1))
+    StepVerifier.create(accountRepository.getById(1L))
       .expectError(AccountRepositoryException.class)
       .verify();
   }
@@ -153,7 +153,7 @@ class AccountRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(accountRepository.createTransaction(1,requestTransaction))
+    StepVerifier.create(accountRepository.createTransaction(1L,requestTransaction))
       .assertNext(receivedTransaction -> {
         assertEquals(expectedTransaction.getId(), receivedTransaction.getId());
         assertEquals(expectedTransaction.getTransactionAmount(), receivedTransaction.getTransactionAmount());
@@ -179,7 +179,7 @@ class AccountRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(accountRepository.createTransaction(1, requestTransaction))
+    StepVerifier.create(accountRepository.createTransaction(1L, requestTransaction))
       .expectError(AccountNotFoundException.class)
       .verify();
   }
@@ -196,7 +196,7 @@ class AccountRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(accountRepository.createTransaction(1, requestTransaction))
+    StepVerifier.create(accountRepository.createTransaction(1L, requestTransaction))
       .expectError(AccountRepositoryException.class)
       .verify();
   }

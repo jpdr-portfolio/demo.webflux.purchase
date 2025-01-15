@@ -68,10 +68,10 @@ class ProductRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(productRepository.getById(1))
+    StepVerifier.create(productRepository.getById(1L))
       .assertNext(receivedProduct -> {
         assertEquals(expectedProduct.getId(), receivedProduct.getId());
-        assertEquals(expectedProduct.getName(), receivedProduct.getName());
+        assertEquals(expectedProduct.getProductName(), receivedProduct.getProductName());
         assertEquals(expectedProduct.getCategoryId(), receivedProduct.getCategoryId());
         assertEquals(expectedProduct.getCategoryName(), receivedProduct.getCategoryName());
         assertEquals(expectedProduct.getIsActive(), receivedProduct.getIsActive());
@@ -96,7 +96,7 @@ class ProductRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(productRepository.getById(1))
+    StepVerifier.create(productRepository.getById(1L))
       .expectError(ProductNotFoundException.class)
       .verify();
   }
@@ -111,7 +111,7 @@ class ProductRepositoryTest {
     response.addHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
     mockWebServer.enqueue(response);
     
-    StepVerifier.create(productRepository.getById(1))
+    StepVerifier.create(productRepository.getById(1L))
       .expectError(ProductRepositoryException.class)
       .verify();
   }

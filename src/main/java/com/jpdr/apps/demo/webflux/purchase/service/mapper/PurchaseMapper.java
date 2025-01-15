@@ -12,12 +12,12 @@ public interface PurchaseMapper {
   PurchaseMapper INSTANCE = Mappers.getMapper(PurchaseMapper.class);
   
   @Mapping(target = "id", expression = "java(null)")
-  @Mapping(target = "creationDate", expression = "java(null)")
-  @Mapping(target = "cancellationDate", expression = "java(null)")
+  @Mapping(target = "purchaseDate", expression = "java(null)")
+  @Mapping(target = "purchaseCancellationDate", expression = "java(null)")
   Purchase dtoToEntity(PurchaseDto dto);
   
-  @Mapping(target = "creationDate", expression = "java(Objects.toString(entity.getCreationDate(),null))" )
-  @Mapping(target = "cancellationDate", expression = "java(Objects.toString(entity.getCancellationDate(),null))" )
+  @Mapping(target = "purchaseDate", expression = "java(Objects.toString(entity.getPurchaseDate(),null))" )
+  @Mapping(target = "purchaseCancellationDate", expression = "java(Objects.toString(entity.getPurchaseCancellationDate(),null))" )
   PurchaseDto entityToDto(Purchase entity);
   
 }

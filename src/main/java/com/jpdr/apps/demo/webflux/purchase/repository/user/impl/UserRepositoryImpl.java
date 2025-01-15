@@ -27,7 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
   
   @Override
   @Cacheable(key = "#userId", value = "users", sync = true)
-  public Mono<UserDto> getById (Integer userId) {
+  public Mono<UserDto> getById (Long userId) {
     return this.webClient.get()
       .uri("/users/{userId}", userId)
       .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

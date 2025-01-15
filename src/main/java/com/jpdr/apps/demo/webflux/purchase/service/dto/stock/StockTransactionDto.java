@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -21,16 +22,16 @@ import java.math.BigDecimal;
 public class StockTransactionDto implements Serializable {
   
   @JsonInclude(Include.NON_NULL)
-  Integer id;
+  Long id;
   @JsonInclude(Include.NON_NULL)
-  Integer productId;
+  Long productId;
   @JsonInclude(Include.NON_NULL)
   String description;
-  @JsonInclude(Include.NON_NULL)
+  @NonNull
   Integer quantity;
-  @JsonInclude(Include.NON_NULL)
+  @NonNull
   BigDecimal unitPrice;
-  @JsonInclude(Include.NON_NULL)
+  @NonNull
   StockTransactionTypeEnum transactionType;
   @JsonInclude(Include.NON_EMPTY)
   String transactionDate;

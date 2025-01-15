@@ -21,37 +21,33 @@ public class Purchase {
   @Id
   @Column("id")
   Long id;
-  @Column("creation_date")
-  OffsetDateTime creationDate;
-  @Column("description")
-  String description;
-  @Column("quantity")
-  Integer quantity;
-  @Column("unit_price")
-  BigDecimal unitPrice;
-  @Column("total_price")
-  BigDecimal totalPrice;
+  @Column("purchase_date")
+  OffsetDateTime purchaseDate;
+  @Column("purchase_description")
+  String purchaseDescription;
+  @Column("purchase_status")
+  String purchaseStatus;
+  @Column("product_id")
+  Long productId;
+  @Column("product_name")
+  String productName;
+  @Column("product_quantity")
+  Integer productQuantity;
+  @Column("product_unit_price")
+  BigDecimal productUnitPrice;
+  @Column("product_total_price")
+  BigDecimal productTotalPrice;
   @Column("user_id")
-  Integer userId;
+  Long userId;
   @Column("user_email")
   String userEmail;
   @Column("user_address")
   String userAddress;
-  @Column("status")
-  String status;
   @Column("account_id")
-  Integer accountId;
+  Long accountId;
   @Column("account_number")
   UUID accountNumber;
-  @Column("product_id")
-  Integer productId;
-  @Column("product_name")
-  String productName;
-  @Column("retailer_id")
-  Integer retailerId;
-  @Column("retailer_name")
-  String retailerName;
-  @Column("cancellation_date")
-  OffsetDateTime cancellationDate;
+  @Column("purchase_cancellation_date")
+  OffsetDateTime purchaseCancellationDate;
   
 }

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.lang.NonNull;
 
 import java.io.Serializable;
 
@@ -19,15 +20,19 @@ import java.io.Serializable;
 public class ProductDto implements Serializable {
   
   @JsonInclude(Include.NON_NULL)
-  Integer id;
+  Long id;
+  @NonNull
+  String productName;
   @JsonInclude(Include.NON_NULL)
-  String name;
-  @JsonInclude(Include.NON_NULL)
-  Integer categoryId;
+  Long categoryId;
   @JsonInclude(Include.NON_NULL)
   String categoryName;
   @JsonInclude(Include.NON_NULL)
-  Integer retailerId;
+  Long subCategoryId;
+  @JsonInclude(Include.NON_NULL)
+  String subCategoryName;
+  @JsonInclude(Include.NON_NULL)
+  Long retailerId;
   @JsonInclude(Include.NON_NULL)
   String retailerName;
   @JsonInclude(Include.NON_NULL)
