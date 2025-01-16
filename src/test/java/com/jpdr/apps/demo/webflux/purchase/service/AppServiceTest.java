@@ -88,7 +88,7 @@ class AppServiceTest {
     when(purchaseRepository.findAll())
       .thenReturn(Flux.fromIterable(expectedPurchases));
     
-    StepVerifier.create(appService.findPurchases(null))
+    StepVerifier.create(appService.findPurchases(1L,null))
       .assertNext(receivedPurchases -> {
         for (PurchaseDto receivedPurchase : receivedPurchases){
           assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),
@@ -112,10 +112,10 @@ class AppServiceTest {
     when(userRepository.getById(anyLong()))
       .thenReturn(Mono.just(userDto));
     
-    when(purchaseRepository.findAllByUserId(anyLong()))
+    when(purchaseRepository.findAllByUserIdOrderByPurchaseDateDesc(anyLong()))
       .thenReturn(Flux.fromIterable(expectedPurchases));
     
-    StepVerifier.create(appService.findPurchases(1L))
+    StepVerifier.create(appService.findPurchases(1L,1L))
       .assertNext(receivedPurchases -> {
         for (PurchaseDto receivedPurchase : receivedPurchases)
           assertPurchase(expectedPurchasesMap.get(receivedPurchase.getId()),

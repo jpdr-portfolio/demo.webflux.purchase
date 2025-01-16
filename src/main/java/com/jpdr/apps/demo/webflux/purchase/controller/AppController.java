@@ -27,8 +27,9 @@ public class AppController {
   
   @GetMapping("/purchases")
   public Mono<ResponseEntity<List<PurchaseDto>>> findPurchases(
+    @RequestParam(name = "limit") Long limit,
     @RequestParam(name = "userId", required = false) Long userId ){
-    return this.appService.findPurchases(userId)
+    return this.appService.findPurchases(limit, userId)
       .doOnNext(purchases -> this.eventLogger.logEvent("findPurchases", purchases))
       .map(purchases -> new ResponseEntity<>(purchases, HttpStatus.OK));
   }

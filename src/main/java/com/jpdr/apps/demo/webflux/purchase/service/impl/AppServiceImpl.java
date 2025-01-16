@@ -24,7 +24,6 @@ import com.jpdr.apps.demo.webflux.purchase.service.mapper.PurchaseMapper;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -52,19 +51,21 @@ public class AppServiceImpl implements AppService {
   private final CacheHelper cacheHelper;
   
   @Override
-  public Mono<List<PurchaseDto>> findPurchases(Long userId) {
-    return Mono.just(Optional.ofNullable(userId))
-      .flatMap(optional -> {
-          if (optional.isPresent()) {
-            return findPurchasesByUserId(optional.get());
+  public Mono<List<PurchaseDto>> findPurchases(Long limit, Long userId) {
+    return Mono.zip(
+      Mono.defer(() -> Mono.just(limit)),
+      Mono.defer(() -> Mono.just(Optional.ofNullable(userId))))
+      .flatMap(tuple -> {
+          if (tuple.getT2().isPresent()) {
+            return findPurchasesByUserId(tuple.getT1(), tuple.getT2().get());
           }
-          return findAllPurchases();
+          return findAllPurchases(tuple.getT1());
         }
       );
   }
   
   @Override
-  public Mono<List<PurchaseDto>> findAllPurchases() {
+  public Mono<List<PurchaseDto>> findAllPurchases(Long limit) {
     log.debug("findAllPurchases");
     return this.purchaseRepository.findAll()
       .map(PurchaseMapper.INSTANCE::entityToDto)
@@ -74,11 +75,12 @@ public class AppServiceImpl implements AppService {
   
   
   @Override
-  public Mono<List<PurchaseDto>> findPurchasesByUserId(Long userId) {
+  public Mono<List<PurchaseDto>> findPurchasesByUserId(Long limit, Long userId) {
     log.debug("findPurchasesByUserId");
     return this.userRepository.getById(userId)
       .map(UserDto::getId)
-      .flatMapMany(this.purchaseRepository::findAllByUserId)
+      .flatMapMany(this.purchaseRepository::findAllByUserIdOrderByPurchaseDateDesc)
+      .take(limit)
       .map(PurchaseMapper.INSTANCE::entityToDto)
       .doOnNext(purchase -> log.debug(purchase.toString()))
       .collectList();

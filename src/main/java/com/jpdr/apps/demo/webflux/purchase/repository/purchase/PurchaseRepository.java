@@ -8,6 +8,6 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface PurchaseRepository extends ReactiveCrudRepository<Purchase, Long> {
   
-  Flux<Purchase> findAllByUserId(Long userId);
+  Flux<Purchase> findAllByUserIdOrderByPurchaseDateDesc(Long userId);
   
 }

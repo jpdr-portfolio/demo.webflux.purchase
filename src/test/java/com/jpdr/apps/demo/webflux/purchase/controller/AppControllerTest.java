@@ -52,11 +52,15 @@ class AppControllerTest {
     
     String expectedBody = objectMapper.writeValueAsString(expectedPurchases);
     
-    when(appService.findPurchases(isNull()))
+    when(appService.findPurchases(anyLong(), isNull()))
       .thenReturn(Mono.just(expectedPurchases));
     
     FluxExchangeResult<String> exchangeResult = this.webTestClient.get()
-      .uri("/purchases")
+      .uri(uriBuilder -> uriBuilder
+        .path("/purchases")
+        .queryParam("limit", 1L)
+        .build()
+      )
       .exchange()
       .expectHeader()
       .contentType(MediaType.APPLICATION_JSON)
@@ -79,11 +83,16 @@ class AppControllerTest {
     
     String expectedBody = objectMapper.writeValueAsString(expectedPurchases);
     
-    when(appService.findPurchases(anyLong()))
+    when(appService.findPurchases(anyLong(),anyLong()))
       .thenReturn(Mono.just(expectedPurchases));
     
     FluxExchangeResult<String> exchangeResult = this.webTestClient.get()
-      .uri("/purchases" + "?userId=" + 1)
+      .uri(uriBuilder -> uriBuilder
+        .path("/purchases")
+        .queryParam("limit", 1L)
+        .queryParam("userId", 1L)
+        .build()
+      )
       .exchange()
       .expectHeader()
       .contentType(MediaType.APPLICATION_JSON)
